@@ -10,9 +10,12 @@ namespace MaxiShop.Domain.Contracts
     public interface IGenericRepository<T> where T : class
     {
         Task<T> CreateAsync(T entity);
-        Task<T> DeleteAsync(T entity);
+
+        Task DeleteAsync(T entity);
+
         Task<IEnumerable<T>> GetAllAsync();
-        Task<T> GetById(Expression<Func<T, bool>> condition);
+
+        Task<T> GetByIdAsync(Expression<Func<T, bool>> condition);
 
     }
 }

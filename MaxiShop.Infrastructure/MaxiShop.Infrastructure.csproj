@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MaxiShop.Application\MaxiShop.Application.csproj" />
     <ProjectReference Include="..\MaxiShop.Domain\MaxiShop.Domain.csproj" />
   </ItemGroup>
 

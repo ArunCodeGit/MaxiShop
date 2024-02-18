@@ -29,7 +29,7 @@ namespace MaxiShop.Infrastructure.Repositories
 
         public async Task DeleteAsync(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
+            _dbContext.Remove(entity);
             await _dbContext.SaveChangesAsync();
         }
 
@@ -38,9 +38,11 @@ namespace MaxiShop.Infrastructure.Repositories
             return await _dbContext.Set<T>().AsNoTracking().ToListAsync(); 
         }
 
-        public Task<T> GetById(Expression<Func<T, bool>> condition)
+        public async Task<T> GetByIdAsync(Expression<Func<T, bool>> condition)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(condition);
         }
+
+        
     }
 }
