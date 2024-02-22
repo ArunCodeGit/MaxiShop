@@ -23,6 +23,8 @@ namespace MaxiShop.Controllers
         {
             var Categories =  _dbContext.Category.ToList();
             return Ok(Categories);
+
+
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]

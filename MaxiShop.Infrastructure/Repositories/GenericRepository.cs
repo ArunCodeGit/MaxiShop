@@ -42,7 +42,5 @@ namespace MaxiShop.Infrastructure.Repositories
         {
             return await _dbContext.Set<T>().AsNoTracking().FirstOrDefaultAsync(condition);
         }
-
-        
     }
 }
