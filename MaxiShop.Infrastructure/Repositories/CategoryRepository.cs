@@ -17,9 +17,10 @@ namespace MaxiShop.Infrastructure.Repositories
 
         }
 
-        public Task Update(Category category)
+        public async Task Update(Category category)
         {
-            throw new NotImplementedException();
+            _dbContext.Update(category);
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
