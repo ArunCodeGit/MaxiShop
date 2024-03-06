@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MaxiShop.Infrastructure")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+39839b6f570556f8a10753a04db6d6ca0d31a016")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3197e80eaeaaf573d332ca4efb3c889c9be6ab5a")]
 [assembly: System.Reflection.AssemblyProductAttribute("MaxiShop.Infrastructure")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MaxiShop.Infrastructure")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

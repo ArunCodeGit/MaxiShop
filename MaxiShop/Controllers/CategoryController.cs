@@ -24,8 +24,6 @@ namespace MaxiShop.Controllers
         {
             var Categories = await _categoryRepository.GetAllAsync();
             return Ok(Categories);
-
-
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -83,7 +81,7 @@ namespace MaxiShop.Controllers
                 return BadRequest();
             }
 
-            var category = _categoryRepository.GetByIdAsync(x=>x.Id == id);
+            var category = await _categoryRepository.GetByIdAsync(x=>x.Id == id);
             if (category == null)
             {
                 return NotFound();
