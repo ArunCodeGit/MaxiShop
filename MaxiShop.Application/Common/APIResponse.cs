@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MaxiShop.Application.Common
 {
-    partial class APIResponse
+    public class APIResponse
     {
         public HttpStatusCode statusCode { get; set; }
         public bool IsSuccess { get; set; }
