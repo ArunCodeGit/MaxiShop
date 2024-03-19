@@ -14,6 +14,6 @@ namespace MaxiShop.Domain.Models
         public string BrandName { get; set; }
 
         [Required]
-        public DateTime EstablishedYear {  get; set; }
+        public int EstablishedYear {  get; set; }
     }
 }
