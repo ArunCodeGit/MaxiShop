@@ -17,12 +17,12 @@ namespace MaxiShop.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ICategoryService _brandService;
         protected readonly APIResponse _response;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService brandService)
         {
-            _categoryService = categoryService;
+            _brandService = brandService;
             _response = new APIResponse();
         }
 
@@ -32,7 +32,7 @@ namespace MaxiShop.Controllers
         {
             try
             {
-                var Categories = await _categoryService.GetAllAsync();
+                var Categories = await _brandService.GetAllAsync();
                 _response.statusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 _response.Result = Categories;
@@ -52,7 +52,7 @@ namespace MaxiShop.Controllers
         {
             try
             {
-                var Category = await _categoryService.GetByIdAsync(id);
+                var Category = await _brandService.GetByIdAsync(id);
 
                 if (Category == null)
                 {
@@ -65,7 +65,7 @@ namespace MaxiShop.Controllers
                 _response.Result = Category;
                 _response.statusCode = HttpStatusCode.OK;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _response.statusCode = HttpStatusCode.InternalServerError;
                 _response.AddErrors(CommonMessage.SystemError);
@@ -87,14 +87,14 @@ namespace MaxiShop.Controllers
                     _response.DisplayMessage = CommonMessage.CreateOperationFailed;
                     return Ok(_response);
                 }
-                var entity = await _categoryService.CreateAsync(dto);
+                var entity = await _brandService.CreateAsync(dto);
 
                 _response.statusCode = HttpStatusCode.Created;
                 _response.IsSuccess = true;
                 _response.DisplayMessage = CommonMessage.CreateOperationSuccess;
                 _response.Result = entity;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _response.statusCode = HttpStatusCode.InternalServerError;
                 _response.AddErrors(CommonMessage.SystemError);
@@ -118,9 +118,9 @@ namespace MaxiShop.Controllers
                     return Ok(_response);
                 }
 
-                var category = await _categoryService.GetByIdAsync(dto.Id);
+                var brand = await _brandService.GetByIdAsync(dto.Id);
 
-                if(category == null)
+                if(brand == null)
                 {
                     _response.statusCode = HttpStatusCode.NotFound;
                     _response.DisplayMessage = CommonMessage.UpdateOperationFailed;
@@ -129,7 +129,7 @@ namespace MaxiShop.Controllers
                 _response.statusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 _response.DisplayMessage = CommonMessage.UpdateOperationSuccess;
-                await _categoryService.UpdateAsync(dto);
+                await _brandService.UpdateAsync(dto);
             }
             catch (Exception)
             {
@@ -153,14 +153,14 @@ namespace MaxiShop.Controllers
                     return Ok(_response);
                 }
 
-                var category = await _categoryService.GetByIdAsync(id);
-                if (category == null)
+                var brand = await _brandService.GetByIdAsync(id);
+                if (brand == null)
                 {
                     _response.statusCode = HttpStatusCode.NotFound ;
                     _response.DisplayMessage = CommonMessage.DeleteOperationFailed;
                     return Ok(_response);
                 }
-                await _categoryService.DeleteAsync(id);
+                await _brandService.DeleteAsync(id);
                 _response.statusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 _response.DisplayMessage = CommonMessage.DeleteOperationSuccess;
