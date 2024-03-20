@@ -2,6 +2,7 @@ using MaxiShop.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using MaxiShop.Infrastructure;
 using MaxiShop.Application;
+using MaxiShop.Infrastructure.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,35 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+#region Configuration for seeding data to database
+static async void UpdateDatabaseAsync(IHost host)
+{
+    using (var scope = host.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        try
+        {
+            var context = services.GetRequiredService<ApplicationDbContext>();
+
+            if (context.Database.IsSqlServer())
+            {
+                context.Database.Migrate();
+            }
+            await SeedData.SeedDataAsync(context);
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
+
+            logger.LogError(ex, "An error occurred while migrating or seeding the database.");
+        }
+    }
+}
+#endregion
+
 var app = builder.Build();
+
+UpdateDatabaseAsync(app);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
