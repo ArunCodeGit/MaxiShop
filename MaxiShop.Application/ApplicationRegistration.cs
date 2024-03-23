@@ -20,6 +20,8 @@ namespace MaxiShop.Application
 
             services.AddScoped<IBrandService, BrandService>();
 
+            services.AddScoped<IProductService, ProductService>();
+
             return services;
         }
     }
