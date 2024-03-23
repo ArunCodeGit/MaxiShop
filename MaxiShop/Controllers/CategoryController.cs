@@ -17,12 +17,12 @@ namespace MaxiShop.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryService _brandService;
+        private readonly ICategoryService _categoryService;
         protected readonly APIResponse _response;
 
-        public CategoryController(ICategoryService brandService)
+        public CategoryController(ICategoryService categoryService)
         {
-            _brandService = brandService;
+            _categoryService = categoryService;
             _response = new APIResponse();
         }
 
@@ -32,7 +32,7 @@ namespace MaxiShop.Controllers
         {
             try
             {
-                var Categories = await _brandService.GetAllAsync();
+                var Categories = await _categoryService.GetAllAsync();
                 _response.statusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 _response.Result = Categories;
@@ -52,7 +52,7 @@ namespace MaxiShop.Controllers
         {
             try
             {
-                var Category = await _brandService.GetByIdAsync(id);
+                var Category = await _categoryService.GetByIdAsync(id);
 
                 if (Category == null)
                 {
@@ -87,7 +87,7 @@ namespace MaxiShop.Controllers
                     _response.DisplayMessage = CommonMessage.CreateOperationFailed;
                     return Ok(_response);
                 }
-                var entity = await _brandService.CreateAsync(dto);
+                var entity = await _categoryService.CreateAsync(dto);
 
                 _response.statusCode = HttpStatusCode.Created;
                 _response.IsSuccess = true;
@@ -118,7 +118,7 @@ namespace MaxiShop.Controllers
                     return Ok(_response);
                 }
 
-                var brand = await _brandService.GetByIdAsync(dto.Id);
+                var brand = await _categoryService.GetByIdAsync(dto.Id);
 
                 if(brand == null)
                 {
@@ -129,7 +129,7 @@ namespace MaxiShop.Controllers
                 _response.statusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 _response.DisplayMessage = CommonMessage.UpdateOperationSuccess;
-                await _brandService.UpdateAsync(dto);
+                await _categoryService.UpdateAsync(dto);
             }
             catch (Exception)
             {
@@ -153,14 +153,14 @@ namespace MaxiShop.Controllers
                     return Ok(_response);
                 }
 
-                var brand = await _brandService.GetByIdAsync(id);
+                var brand = await _categoryService.GetByIdAsync(id);
                 if (brand == null)
                 {
                     _response.statusCode = HttpStatusCode.NotFound ;
                     _response.DisplayMessage = CommonMessage.DeleteOperationFailed;
                     return Ok(_response);
                 }
-                await _brandService.DeleteAsync(id);
+                await _categoryService.DeleteAsync(id);
                 _response.statusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 _response.DisplayMessage = CommonMessage.DeleteOperationSuccess;

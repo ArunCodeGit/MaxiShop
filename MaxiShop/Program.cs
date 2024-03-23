@@ -46,7 +46,7 @@ static async void UpdateDatabaseAsync(IHost host)
         }
         catch (Exception ex)
         {
-            var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
             logger.LogError(ex, "An error occurred while migrating or seeding the database.");
         }

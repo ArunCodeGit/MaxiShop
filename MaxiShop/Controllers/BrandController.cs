@@ -29,7 +29,7 @@ namespace MaxiShop.Controllers
         {
             try
             {
-                var brands = _brandService.GetAllAsync();
+                var brands = await _brandService.GetAllAsync();
                 _response.statusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 _response.Result = brands;

@@ -20,7 +20,7 @@ namespace MaxiShop.Application.Common
 
             CreateMap<Brand, CreateBrandDto>().ReverseMap();
             CreateMap<Brand, UpdateBrandDto>().ReverseMap();
-            CreateMap<Brand, BrandDto>().ReverseMap();
+            CreateMap<Brand, BrandDto>().ForMember(x=>x.Name, src => src.MapFrom(x=>x.BrandName)).ReverseMap();
 
         }
     }
