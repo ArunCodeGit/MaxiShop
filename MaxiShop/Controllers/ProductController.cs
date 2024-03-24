@@ -85,18 +85,55 @@ namespace MaxiShop.Controllers
                     return Ok(_response);
                 }
 
-                var brand = await _productService.CreateAsync(dto);
+                var product = await _productService.CreateAsync(dto);
 
                 _response.statusCode = HttpStatusCode.OK;
                 _response.DisplayMessage = CommonMessage.CreateOperationSuccess;
                 _response.IsSuccess = true;
-                _response.Result = brand;
+                _response.Result = product;
             }
             catch (Exception)
             {
                 _response.statusCode = HttpStatusCode.InternalServerError;
                 _response.AddErrors(CommonMessage.SystemError);
                 _response.DisplayMessage = CommonMessage.CreateOperationFailed;
+            }
+            return Ok(_response);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPut]
+        public async Task<ActionResult<APIResponse>> Update(UpdateProductDto dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    _response.statusCode = HttpStatusCode.OK;
+                    _response.AddErrors(ModelState.ToString());
+                    _response.DisplayMessage = CommonMessage.UpdateOperationFailed;
+                    return Ok(_response);
+                }
+
+                var product = await _productService.GetByIdAsync(dto.ID);
+
+                if(product == null)
+                {
+                    _response.statusCode = HttpStatusCode.NotFound;
+                    _response.DisplayMessage = CommonMessage.UpdateOperationFailed;
+                    return Ok(_response);
+                }
+
+                _response.statusCode = HttpStatusCode.OK;
+                _response.DisplayMessage = CommonMessage.UpdateOperationSuccess;
+                _response.IsSuccess = true;
+                _response.Result = product;
+            }
+            catch (Exception)
+            {
+                _response.statusCode = HttpStatusCode.InternalServerError;
+                _response.AddErrors(CommonMessage.SystemError);
+                _response.DisplayMessage = CommonMessage.UpdateOperationFailed;
             }
             return Ok(_response);
         }
