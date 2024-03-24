@@ -43,6 +43,26 @@ namespace MaxiShop.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpGet]
+        [Route("Filter")]
+        public async Task<ActionResult> GetFilter(int? categoryId, int? brandId)
+        {
+            try
+            {
+                var brands = await _productService.GetAllByFilterAsync(categoryId, brandId);
+                _response.statusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = brands;
+            }
+            catch (Exception)
+            {
+                _response.statusCode = HttpStatusCode.InternalServerError;
+                _response.AddErrors(CommonMessage.SystemError);
+            }
+            return Ok(_response);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet]
         [Route("Details")]
         public async Task<ActionResult<APIResponse>> Get(int id)
         {
