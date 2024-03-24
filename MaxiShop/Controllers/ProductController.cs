@@ -128,12 +128,49 @@ namespace MaxiShop.Controllers
                 _response.DisplayMessage = CommonMessage.UpdateOperationSuccess;
                 _response.IsSuccess = true;
                 _response.Result = product;
+
+                await _productService.UpdateAsync(dto);
             }
             catch (Exception)
             {
                 _response.statusCode = HttpStatusCode.InternalServerError;
                 _response.AddErrors(CommonMessage.SystemError);
                 _response.DisplayMessage = CommonMessage.UpdateOperationFailed;
+            }
+            return Ok(_response);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpDelete]
+        public async Task<ActionResult<APIResponse>> Delete(int id)
+        {
+            try
+            {
+                if(id == 0)
+                {
+                    _response.statusCode = HttpStatusCode.BadGateway;
+                    _response.DisplayMessage = CommonMessage.DeleteOperationFailed;
+                    return Ok(_response);
+                }
+
+                var product = _productService.GetByIdAsync(id);
+
+                if(product == null)
+                {
+                    _response.statusCode = HttpStatusCode.NotFound;
+                    _response.DisplayMessage = CommonMessage.DeleteOperationFailed;
+                    return Ok(_response);
+                }
+                await _productService.DeleteAsync(id);
+                _response.statusCode = HttpStatusCode.NoContent;
+                _response.IsSuccess = true;
+                _response.DisplayMessage = CommonMessage.DeleteOperationSuccess;
+            }
+            catch (Exception)
+            {
+                _response.statusCode = HttpStatusCode.InternalServerError;
+                _response.AddErrors(CommonMessage.SystemError);
+                _response.DisplayMessage = CommonMessage.DeleteOperationFailed;
             }
             return Ok(_response);
         }
