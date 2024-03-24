@@ -1,6 +1,7 @@
 ﻿using MaxiShop.Domain.Contracts;
 using MaxiShop.Domain.Models;
 using MaxiShop.Infrastructure.DbContexts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,16 @@ namespace MaxiShop.Infrastructure.Repositories
         public ProductRepository(ApplicationDbContext dbcontext):base(dbcontext)
         {
             
+        }
+
+        public async Task<IEnumerable<Product>> GetAllProductAsync()
+        {
+            return await _dbContext.Product.Include(x => x.Category).Include(x => x.Brand).AsNoTracking().ToListAsync();
+        }
+
+        public async Task<Product> GetDetailsAsync(int id)
+        {
+            return await _dbContext.Product.Include(x => x.Category).Include(x => x.Brand).AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id);
         }
 
         public async Task UpdateAsync(Product product)
