@@ -1,5 +1,7 @@
 ﻿using MaxiShop.Application.DTO.Category;
 using MaxiShop.Application.DTO.Product;
+using MaxiShop.Application.InputModels;
+using MaxiShop.Application.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,7 @@ namespace MaxiShop.Application.Services.Interfaces
 {
     public interface IProductService
     {
+        Task<PaginationVM<ProductDto>> GetPagination(PaginationInputModel pagination);
         Task<ProductDto> GetByIdAsync(int id);
         Task<IEnumerable<ProductDto>> GetAllAsync();
         Task<IEnumerable<ProductDto>> GetAllByFilterAsync(int? categoryId, int? brandId);

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MaxiShop.Application.DTO.Product;
+using MaxiShop.Application.InputModels;
 using MaxiShop.Application.Services.Interfaces;
+using MaxiShop.Application.ViewModels;
 using MaxiShop.Domain.Contracts;
 using MaxiShop.Domain.Models;
 using System;
@@ -14,12 +16,14 @@ namespace MaxiShop.Application.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IPaginationService<ProductDto, Product> _paginationService;
         private readonly IMapper _mapper;
 
-        public ProductService(IProductRepository productRepository, IMapper mapper)
+        public ProductService(IProductRepository productRepository, IMapper mapper, IPaginationService<ProductDto, Product> paginationService)
         {
             _productRepository = productRepository;
             _mapper = mapper;
+            _paginationService = paginationService;
         }
 
         public async Task<ProductDto> CreateAsync(CreateProductDto createProductDto)
@@ -50,7 +54,7 @@ namespace MaxiShop.Application.Services
 
         public async Task<IEnumerable<ProductDto>> GetAllByFilterAsync(int? categoryId, int? brandId)
         {
-            var query = await _productRepository.GetAllProductAsync();
+            var query = await _productRepository.GetAllAsync();
 
             if(categoryId > 0)
             {
@@ -59,7 +63,7 @@ namespace MaxiShop.Application.Services
 
             if(brandId > 0)
             {
-                query = query.Where(x=>x.BrandID == brandId);
+                query = query.Where(x => x.BrandID == brandId);
             }
 
             var result = _mapper.Map<List<ProductDto>>(query);
@@ -72,6 +76,15 @@ namespace MaxiShop.Application.Services
             var product = await _productRepository.GetDetailsAsync(id);
 
             return _mapper.Map<ProductDto>(product);
+        }
+
+        public async Task<PaginationVM<ProductDto>> GetPagination(PaginationInputModel pagination)
+        {
+            var source = await _productRepository.GetAllProductAsync();
+
+            var result = _paginationService.GetPagination(source, pagination);
+
+            return result;
         }
 
         public async Task UpdateAsync(UpdateProductDto updateProductDto)
