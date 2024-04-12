@@ -54,7 +54,9 @@ namespace MaxiShop.Application.Services
 
         public async Task<IEnumerable<ProductDto>> GetAllByFilterAsync(int? categoryId, int? brandId)
         {
-            var query = await _productRepository.GetAllAsync();
+            var data = await _productRepository.GetAllProductAsync();
+
+            IEnumerable<Product> query = data;
 
             if(categoryId > 0)
             {
