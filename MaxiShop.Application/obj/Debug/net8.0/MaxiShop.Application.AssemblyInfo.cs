@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MaxiShop.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+50bf1df5001d9311f1aecf2bcaf2b1c1ec25e9b7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b0a46553a5e1db438b440ec93d11295607ce080f")]
 [assembly: System.Reflection.AssemblyProductAttribute("MaxiShop.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MaxiShop.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

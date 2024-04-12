@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MaxiShop.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c08b538b4042786a5564192e22eb36a8cf11e0e6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b0a46553a5e1db438b440ec93d11295607ce080f")]
 [assembly: System.Reflection.AssemblyProductAttribute("MaxiShop.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MaxiShop.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
