@@ -97,6 +97,7 @@ namespace MaxiShop.Controllers
                 _response.statusCode = HttpStatusCode.InternalServerError;
                 _response.AddErrors(CommonMessage.SystemError);
                 _response.DisplayMessage = CommonMessage.CreateOperationFailed;
+                _response.AddWarnings(ex.Message);
                 _response.Result = ex.validationErrors;
             }
             catch (Exception)
