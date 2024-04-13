@@ -28,7 +28,7 @@ namespace MaxiShop.Application.Services
             applicationUser.Email = register.Email;
             applicationUser.UserName = register.Email;
 
-            var result = await _userManager.CreateAsync(applicationUser);
+            var result = await _userManager.CreateAsync(applicationUser, register.Password);
 
             if (result.Succeeded)
             {
