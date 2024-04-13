@@ -13,12 +13,15 @@ namespace MaxiShop.Application.Services
     internal class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signManager;
+
         private ApplicationUser applicationUser;
 
-        public AuthService(UserManager<ApplicationUser> userManager)
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signManager = null)
         {
             _userManager = userManager;
             applicationUser = new();
+            _signManager = signManager;
         }
 
         public async Task<IEnumerable<IdentityError>> Register(Register register)
@@ -36,6 +39,44 @@ namespace MaxiShop.Application.Services
             }
 
             return result.Errors;
+        }
+
+        public async Task<object> Login(Login login)
+        {
+            applicationUser = await _userManager.FindByEmailAsync(login.Email);
+
+            if(applicationUser == null)
+            {
+                return "Invalid Email Address";
+            }
+
+            var result = await _signManager.PasswordSignInAsync(login.Email, login.Password, isPersistent:true, lockoutOnFailure:true);
+
+            var isValidCredential = await _userManager.CheckPasswordAsync(applicationUser, login.Password);
+
+            if (result.Succeeded)
+            {
+                return true;
+            }
+            else
+            {
+                if (result.IsLockedOut)
+                {
+                    return "Your account is locked, contact system admin";
+                }
+                if (result.IsNotAllowed)
+                {
+                    return "Please verify Email Address";
+                }
+                if(isValidCredential == false)
+                {
+                    return "Invalid Password";
+                }
+                else
+                {
+                    return "Login Failed!";
+                }
+            }
         }
     }
 }

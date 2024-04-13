@@ -26,6 +26,7 @@ namespace MaxiShop.Controllers
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost]
+        [Route("Register")]
         public async Task<ActionResult<APIResponse>> Register(Register register)
         {
             try
@@ -41,6 +42,42 @@ namespace MaxiShop.Controllers
                 _response.IsSuccess = true;
                 _response.DisplayMessage = CommonMessage.RegistrationSuccess;
                 _response.statusCode = HttpStatusCode.Created;
+                _response.Result = result;
+            }
+            catch (Exception)
+            {
+                _response.statusCode = HttpStatusCode.InternalServerError;
+                _response.AddErrors(CommonMessage.SystemError);
+            }
+            return Ok(_response);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost]
+        [Route("Login")]
+        public async Task<ActionResult<APIResponse>> Login(Login login)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    _response.AddErrors(ModelState.ToString());
+                    _response.AddWarnings(CommonMessage.RegistrationFailed);
+                    return _response;
+                }
+                var result = await _authService.Login(login);
+
+                if(result is string)
+                {
+                    _response.statusCode = HttpStatusCode.BadGateway;
+                    _response.DisplayMessage = CommonMessage.LoginFailed;
+                    _response.Result = result;
+                    return _response;
+                }
+
+                _response.IsSuccess = true;
+                _response.DisplayMessage = CommonMessage.LoginSuccess;
+                _response.statusCode = HttpStatusCode.OK;
                 _response.Result = result;
             }
             catch (Exception)
