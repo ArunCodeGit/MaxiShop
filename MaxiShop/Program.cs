@@ -5,6 +5,7 @@ using MaxiShop.Application;
 using MaxiShop.Infrastructure.Common;
 using MaxiShop.Middlewares;
 using Microsoft.AspNetCore.Identity;
+using MaxiShop.Application.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
 
 }).AddEntityFrameworkStores<ApplicationDbContext>();
