@@ -43,7 +43,7 @@ namespace MaxiShop.Application.Services
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(applicationUser, "ADMIN");
+                await _userManager.AddToRoleAsync(applicationUser, "CUSTOMER");
             }
 
             return result.Errors;
@@ -113,10 +113,10 @@ namespace MaxiShop.Application.Services
             var token = new JwtSecurityToken
                 (
                 issuer: _config["JwtSettings:Issuer"],
-                audience: _config["JwtSettings: Audience"],
+                audience: _config["JwtSettings:Audience"],
                 claims: claims,
                 signingCredentials: signingCredentials,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(_config["JwtSeetings: DurationInMinutes"]))
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToInt32(_config["JwtSettings:DurationInMinutes"]))
                 );
             return new JwtSecurityTokenHandler().WriteToken(token);
         } 

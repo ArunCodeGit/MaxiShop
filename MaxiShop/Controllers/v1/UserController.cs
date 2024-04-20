@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace MaxiShop.Controllers
+namespace MaxiShop.Controllers.v1
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class UserController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -67,7 +68,7 @@ namespace MaxiShop.Controllers
                 }
                 var result = await _authService.Login(login);
 
-                if(result is string)
+                if (result is string)
                 {
                     _response.statusCode = HttpStatusCode.BadGateway;
                     _response.DisplayMessage = CommonMessage.LoginFailed;

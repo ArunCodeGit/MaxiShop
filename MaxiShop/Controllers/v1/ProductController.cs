@@ -1,28 +1,27 @@
-﻿using Azure;
-using MaxiShop.Application.ApplicationConstants;
+﻿using MaxiShop.Application.ApplicationConstants;
 using MaxiShop.Application.Common;
-using MaxiShop.Application.DTO.Category;
+using MaxiShop.Application.DTO.Brand;
+using MaxiShop.Application.DTO.Product;
+using MaxiShop.Application.InputModels;
 using MaxiShop.Application.Services.Interfaces;
-using MaxiShop.Domain.Contracts;
-using MaxiShop.Domain.Models;
-using MaxiShop.Infrastructure.DbContexts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Net;
 
-namespace MaxiShop.Controllers
+namespace MaxiShop.Controllers.v1
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    [ApiVersion("1.0")]
+    public class ProductController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
         protected readonly APIResponse _response;
 
-        public CategoryController(ICategoryService categoryService)
+        public ProductController(IProductService productService)
         {
-            _categoryService = categoryService;
+            _productService = productService;
             _response = new APIResponse();
         }
 
@@ -32,12 +31,53 @@ namespace MaxiShop.Controllers
         {
             try
             {
-                var Categories = await _categoryService.GetAllAsync();
+                var brands = await _productService.GetAllAsync();
                 _response.statusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
-                _response.Result = Categories;
+                _response.Result = brands;
             }
-            catch(Exception)
+            catch (Exception)
+            {
+                _response.statusCode = HttpStatusCode.InternalServerError;
+                _response.AddErrors(CommonMessage.SystemError);
+            }
+            return Ok(_response);
+        }
+
+        [Authorize(Roles = "ADMIN")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost]
+        [Route("GetPagination")]
+        public async Task<ActionResult> GetPagination(PaginationInputModel pagination)
+        {
+            try
+            {
+                var brands = await _productService.GetPagination(pagination);
+                _response.statusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = brands;
+            }
+            catch (Exception)
+            {
+                _response.statusCode = HttpStatusCode.InternalServerError;
+                _response.AddErrors(CommonMessage.SystemError);
+            }
+            return Ok(_response);
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpGet]
+        [Route("Filter")]
+        public async Task<ActionResult> GetFilter(int? categoryId, int? brandId)
+        {
+            try
+            {
+                var brands = await _productService.GetAllByFilterAsync(categoryId, brandId);
+                _response.statusCode = HttpStatusCode.OK;
+                _response.IsSuccess = true;
+                _response.Result = brands;
+            }
+            catch (Exception)
             {
                 _response.statusCode = HttpStatusCode.InternalServerError;
                 _response.AddErrors(CommonMessage.SystemError);
@@ -52,17 +92,18 @@ namespace MaxiShop.Controllers
         {
             try
             {
-                var Category = await _categoryService.GetByIdAsync(id);
+                var brand = await _productService.GetByIdAsync(id);
 
-                if (Category == null)
+                if (brand == null)
                 {
                     _response.statusCode = HttpStatusCode.NotFound;
                     _response.DisplayMessage = CommonMessage.RecordNotFound;
 
                     return Ok(_response);
                 }
+
                 _response.IsSuccess = true;
-                _response.Result = Category;
+                _response.Result = brand;
                 _response.statusCode = HttpStatusCode.OK;
             }
             catch (Exception)
@@ -70,29 +111,30 @@ namespace MaxiShop.Controllers
                 _response.statusCode = HttpStatusCode.InternalServerError;
                 _response.AddErrors(CommonMessage.SystemError);
             }
-
             return Ok(_response);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost]
-        public async Task<ActionResult<APIResponse>> Create([FromBody]CreateCategoryDto dto)
+        [Route("Create")]
+        public async Task<ActionResult<APIResponse>> Create(CreateProductDto dto)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    _response.statusCode = HttpStatusCode.BadRequest;
+                    _response.statusCode = HttpStatusCode.BadGateway;
                     _response.AddErrors(ModelState.ToString());
                     _response.DisplayMessage = CommonMessage.CreateOperationFailed;
                     return Ok(_response);
                 }
-                var entity = await _categoryService.CreateAsync(dto);
 
-                _response.statusCode = HttpStatusCode.Created;
-                _response.IsSuccess = true;
+                var product = await _productService.CreateAsync(dto);
+
+                _response.statusCode = HttpStatusCode.OK;
                 _response.DisplayMessage = CommonMessage.CreateOperationSuccess;
-                _response.Result = entity;
+                _response.IsSuccess = true;
+                _response.Result = product;
             }
             catch (Exception)
             {
@@ -100,36 +142,38 @@ namespace MaxiShop.Controllers
                 _response.AddErrors(CommonMessage.SystemError);
                 _response.DisplayMessage = CommonMessage.CreateOperationFailed;
             }
-
             return Ok(_response);
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPut]
-        public async Task<ActionResult<APIResponse>> Update([FromBody] UpdateCategoryDto dto)
+        public async Task<ActionResult<APIResponse>> Update(UpdateProductDto dto)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    _response.statusCode = HttpStatusCode.BadRequest;
+                    _response.statusCode = HttpStatusCode.OK;
                     _response.AddErrors(ModelState.ToString());
                     _response.DisplayMessage = CommonMessage.UpdateOperationFailed;
                     return Ok(_response);
                 }
 
-                var brand = await _categoryService.GetByIdAsync(dto.Id);
+                var product = await _productService.GetByIdAsync(dto.ID);
 
-                if(brand == null)
+                if (product == null)
                 {
                     _response.statusCode = HttpStatusCode.NotFound;
                     _response.DisplayMessage = CommonMessage.UpdateOperationFailed;
                     return Ok(_response);
                 }
-                _response.statusCode = HttpStatusCode.NoContent;
-                _response.IsSuccess = true;
+
+                _response.statusCode = HttpStatusCode.OK;
                 _response.DisplayMessage = CommonMessage.UpdateOperationSuccess;
-                await _categoryService.UpdateAsync(dto);
+                _response.IsSuccess = true;
+                _response.Result = product;
+
+                await _productService.UpdateAsync(dto);
             }
             catch (Exception)
             {
@@ -148,19 +192,20 @@ namespace MaxiShop.Controllers
             {
                 if (id == 0)
                 {
-                    _response.statusCode = HttpStatusCode.BadRequest;
+                    _response.statusCode = HttpStatusCode.BadGateway;
                     _response.DisplayMessage = CommonMessage.DeleteOperationFailed;
                     return Ok(_response);
                 }
 
-                var brand = await _categoryService.GetByIdAsync(id);
-                if (brand == null)
+                var product = _productService.GetByIdAsync(id);
+
+                if (product == null)
                 {
-                    _response.statusCode = HttpStatusCode.NotFound ;
+                    _response.statusCode = HttpStatusCode.NotFound;
                     _response.DisplayMessage = CommonMessage.DeleteOperationFailed;
                     return Ok(_response);
                 }
-                await _categoryService.DeleteAsync(id);
+                await _productService.DeleteAsync(id);
                 _response.statusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
                 _response.DisplayMessage = CommonMessage.DeleteOperationSuccess;
@@ -169,7 +214,7 @@ namespace MaxiShop.Controllers
             {
                 _response.statusCode = HttpStatusCode.InternalServerError;
                 _response.AddErrors(CommonMessage.SystemError);
-                _response.DisplayMessage = CommonMessage.DeleteOperationFailed ;
+                _response.DisplayMessage = CommonMessage.DeleteOperationFailed;
             }
             return Ok(_response);
         }
