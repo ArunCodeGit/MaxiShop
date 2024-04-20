@@ -39,6 +39,19 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 
 builder.Services.AddResponseCaching();
 
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1,0);
+    options.ReportApiVersions = true;
+});
+
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
 builder.Services.AddControllers(options =>
 {
     options.CacheProfiles.Add("Default", new CacheProfile
@@ -46,6 +59,9 @@ builder.Services.AddControllers(options =>
         Duration = 30
     });
 });
+
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -70,6 +86,20 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddSwaggerGen(options =>
 {
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "MaxiShop API version 1",
+        Description = "Developed by Arunkumar R",
+        Version = "v1.0"
+    });
+
+    options.SwaggerDoc("v2", new OpenApiInfo
+    {
+        Title = "MaxiShop API version 2",
+        Description = "Developed by Arunkumar R",
+        Version = "v2.0"
+    });
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -140,7 +170,11 @@ await SeedData.SeedRoles(serviceProvider);
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "MaxiShop_V1");
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "MaxiShop_V2");
+    });
 }
 
 app.UseCors("CustomPolicy");
