@@ -19,12 +19,15 @@ namespace MaxiShop.Controllers.v1
     public class BrandController : ControllerBase
     {
         private readonly IBrandService _brandService;
+        private readonly ILogger<BrandController> _logger;
         protected readonly APIResponse _response;
 
-        public BrandController(IBrandService brandService)
+        public BrandController(IBrandService brandService, ILogger<BrandController> logger)
         {
             _brandService = brandService;
             _response = new APIResponse();
+            _logger = logger;
+
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -38,9 +41,11 @@ namespace MaxiShop.Controllers.v1
                 _response.statusCode = HttpStatusCode.OK;
                 _response.IsSuccess = true;
                 _response.Result = brands;
+                _logger.LogInformation("Records Fetched");
             }
             catch (Exception)
             {
+                _logger.LogError("Brand Controller Get operation failed to retrieve the data!");
                 _response.statusCode = HttpStatusCode.InternalServerError;
                 _response.AddErrors(CommonMessage.SystemError);
             }
